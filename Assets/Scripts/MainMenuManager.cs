@@ -18,6 +18,7 @@ public class MainMenuManager : MonoBehaviour
     public void Start() {
         buttonContinue.interactable = false;
         panelOptions.SetActive(false);
+        panelMain.SetActive(true);
         DisableAllOptPanel();
     }
 
@@ -39,6 +40,12 @@ public class MainMenuManager : MonoBehaviour
         panelAffichage.SetActive(true);
     }
 
+    public void CloseOptions() {
+        DisableAllOptPanel();
+        panelOptions.SetActive(false);
+        panelMain.SetActive(true);
+    }
+
     public void AudioOption() {
         DisableAllOptPanel();
         panelAudio.SetActive(true);
@@ -57,11 +64,6 @@ public class MainMenuManager : MonoBehaviour
     public void LangageOption() {
         DisableAllOptPanel();
         panelLang.SetActive(true);
-    }
-
-    public void CloseOptions() {
-        DisableAllOptPanel();
-        panelOptions.SetActive(false);
     }
 
     private void DisableAllOptPanel() {
