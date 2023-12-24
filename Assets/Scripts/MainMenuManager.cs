@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
+    [SerializeField] EffectManager buttonPress;
+
     [SerializeField] Button buttonContinue;
 
     [SerializeField] GameObject panelMain;
@@ -31,37 +33,44 @@ public class MainMenuManager : MonoBehaviour
     }
 
     public void StartGame() {
+        buttonPress.playSound();
         SceneManager.LoadScene("GameMenu");
     }
 
     public void OpenOption() {
+        buttonPress.playSound();
         panelMain.SetActive(false);
         panelOptions.SetActive(true);
         panelAffichage.SetActive(true);
     }
 
     public void CloseOptions() {
+        buttonPress.playSound();
         DisableAllOptPanel();
         panelOptions.SetActive(false);
         panelMain.SetActive(true);
     }
 
     public void AudioOption() {
+        buttonPress.playSound();
         DisableAllOptPanel();
         panelAudio.SetActive(true);
     }
 
     public void AffichageOption() {
+        buttonPress.playSound();
         DisableAllOptPanel();
         panelAffichage.SetActive(true);
     }
 
     public void ControlsOption() {
+        buttonPress.playSound();
         DisableAllOptPanel();
         panelControls.SetActive(true);
     }
 
     public void LangageOption() {
+        buttonPress.playSound();
         DisableAllOptPanel();
         panelLang.SetActive(true);
     }

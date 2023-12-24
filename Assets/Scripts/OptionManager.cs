@@ -6,11 +6,11 @@ using TMPro;
 
 public class OptionManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI fullscreen;
+    [SerializeField] TextMeshProUGUI fullscreenTXT;
 
-    [SerializeField] TextMeshProUGUI generalSound;
-    [SerializeField] TextMeshProUGUI musicSound;
-    [SerializeField] TextMeshProUGUI effectSound;
+    [SerializeField] TextMeshProUGUI generalSoundTXT;
+    [SerializeField] TextMeshProUGUI musicSoundTXT;
+    [SerializeField] TextMeshProUGUI effectSoundTXT;
 
     [SerializeField] TMP_Dropdown    dropdown;
 
@@ -18,63 +18,110 @@ public class OptionManager : MonoBehaviour
     [SerializeField] Slider          slideMusic;
     [SerializeField] Slider          slideEffect;
 
-    private float   generalVolume = 1f;
-    private float   musicVolume = 1f;
-    private float   effectVolume = 1f;
+    private int     fullscreen;
+    private float   generalVolume;
+    private float   musicVolume;
+    private float   effectVolume;
+    private string  resolution;
 
     public void Start() {
+        if (PlayerPrefs.HasKey("FirstLaunch"))
+            loadOptions();
+        else
+            initOptions();
+    }
 
+    private void loadOptions() {
+        fullscreen = PlayerPrefs.GetInt("Fullscreen");
+        generalVolume = PlayerPrefs.GetFloat("GeneralVolume");
+        effectVolume = PlayerPrefs.GetFloat("EffectVolume");
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume");
+        resolution = PlayerPrefs.GetString("Resolution");
+    }
+
+    private void initOptions() {
+        fullscreen = 1;
+        resolution = "1920x1080";
+        generalVolume = 1f;
+        effectVolume = 1f;
+        musicVolume = 1f;
+
+        PlayerPrefs.SetInt("Fullscreen", fullscreen);
+        PlayerPrefs.Save();
+        PlayerPrefs.SetString("Resolution", resolution);
+        PlayerPrefs.Save();
+        PlayerPrefs.SetFloat("GeneralVolume", generalVolume);
+        PlayerPrefs.Save();
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+        PlayerPrefs.Save();
+        PlayerPrefs.SetFloat("EffectVolume", effectVolume);
+        PlayerPrefs.Save();
     }
 
     public void Fullscreen() {
-        Screen.fullScreen = !Screen.fullScreen;
-        if (Screen.fullScreen)
-            fullscreen.text = "On";
+        if (fullscreen == 1)
+            fullscreen = 0;
         else
-            fullscreen.text = "Off";
+            fullscreen = 1;
+        if (fullscreen == 1)
+            fullscreenTXT.text = "On";
+        else
+            fullscreenTXT.text = "Off";
+        PlayerPrefs.SetInt("Fullscreen", fullscreen);
+        PlayerPrefs.Save();
     }
 
     public void ChangeResolution() {
-        string optionSelectionnee = dropdown.options[dropdown.value].text;
+        string resolution = dropdown.options[dropdown.value].text;
 
-        if (optionSelectionnee == "1920x1080")
+        if (resolution == "1920x1080")
             Screen.SetResolution(1920, 1080, Screen.fullScreen);
-        else if (optionSelectionnee == "1280x720")
+        else if (resolution == "1280x720")
             Screen.SetResolution(1280, 720, Screen.fullScreen);
+        PlayerPrefs.SetString("Resolution", resolution);
+        PlayerPrefs.Save();
     }
 
     public void changeGeneralVolume() {
         generalVolume = slideGeneral.value;
 
         float value = generalVolume * 100;
-        generalSound.text = ((int)value).ToString();
+        generalSoundTXT.text = ((int)value).ToString();
         updateAllSources();
+        PlayerPrefs.SetFloat("GeneralVolume", generalVolume);
+        PlayerPrefs.Save();
     }
 
     public void changeMusicVolume() {
         musicVolume = slideMusic.value;
 
         float value = musicVolume * 100;
-        musicSound.text = ((int)value).ToString();
+        musicSoundTXT.text = ((int)value).ToString();
         updateAllMusics();
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+        PlayerPrefs.Save();
     }
 
     public void changeEffectVolume() {
         effectVolume = slideEffect.value;
 
         float value = effectVolume * 100;
-        effectSound.text = ((int)value).ToString();
+        effectSoundTXT.text = ((int)value).ToString();
         updateAllEffects();
+        PlayerPrefs.SetFloat("EffectVolume", effectVolume);
+        PlayerPrefs.Save();
     }
 
     public void updateAllEffects() {
-        foreach (EffectManager em in FindObjectsOfType<EffectManager>()) {
+        EffectManager[] effects = FindObjectsOfType<EffectManager>();
+        foreach (EffectManager em in effects) {
             em.UpdateVolume(effectVolume * generalVolume);
         }
     }
 
     public void updateAllMusics() {
-        foreach (MusicManager mm in FindObjectsOfType<MusicManager>()) {
+        MusicManager[] music = FindObjectsOfType<MusicManager>();
+        foreach (MusicManager mm in music) {
             mm.UpdateVolume(musicVolume * generalVolume);
         }
     }
